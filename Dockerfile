@@ -1,14 +1,38 @@
-FROM alpine
+FROM scratch
 
-MAINTAINER Serge Fomin <serge.fo@gmail.com>
+ARG VERSION=edge
+ENV VERSION=${VERSION}
 
-# Full list of mirrors can be found here http://rsync.alpinelinux.org/alpine/MIRRORS.txt
-ENV APK_MIRROR http://mirror.leaseweb.com
+# curl -o rootfs-edge.tar.xz https://raw.githubusercontent.com/gliderlabs/docker-alpine/rootfs/library-edge/versions/library-edge/rootfs.tar.xz OUT=rootfs-edge.tar.xz
 
-# Enabling main, community and testing alpine package repos
-# RUN echo "$APK_MIRROR/alpine/edge/main" > /etc/apk/repositories
-# RUN echo "@community $APK_MIRROR/alpine/edge/community" >> /etc/apk/repositories
-# RUN echo "@testing $APK_MIRROR/alpine/edge/testing" >> /etc/apk/repositories
+ADD rootfs-${VERSION}.tar.xz /
 
-RUN echo "$APK_MIRROR/alpine/latest-stable/main" > /etc/apk/repositories
-RUN echo "@community $APK_MIRROR/alpine/latest-stable/community" >> /etc/apk/repositories
+# Global list of Mirrors can be found here:
+# http://rsync.alpinelinux.org/alpine/MIRRORS.txt
+# http://alpine.gliderlabs.com/alpine is the fastest mirror by Fastly
+
+ARG APK_REPO=http://alpine.gliderlabs.com/alpine
+
+ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/glibc-compat/bin:/usr/glibc-compat/sbin
+
+# Read more https://github.com/sgerrand/alpine-pkg-glibc/releases
+
+COPY glibc-2.25-r0.apk /tmp/glibc-2.25-r0.apk
+COPY glibc-bin-2.25-r0.apk /tmp/glibc-bin-2.25-r0.apk
+COPY glibc-i18n-2.25-r0.apk /tmp/glibc-i18n-2.25-r0.apk
+
+COPY apk.sh /apk.sh
+
+RUN chmod +x /apk.sh \
+  && /apk.sh ${APK_REPO} \
+  && apk add --no-cache \
+    ca-certificates \
+    libgcc \
+    tini@community \
+  && apk add --allow-untrusted /tmp/glibc-2.25-r0.apk \
+  && apk add --allow-untrusted /tmp/glibc-bin-2.25-r0.apk \
+  && apk add --allow-untrusted /tmp/glibc-i18n-2.25-r0.apk \
+  && ldconfig /lib /usr/lib /usr/glibc-compat/lib \
+  && rm -rf \
+    /tmp/* \
+    /var/cache/apk/*
