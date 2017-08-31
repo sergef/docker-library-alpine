@@ -1,6 +1,6 @@
 FROM scratch
 
-ARG VERSION=v3.6
+ARG VERSION=edge
 ENV VERSION=${VERSION}
 
 # curl -o rootfs-edge.tar.xz https://raw.githubusercontent.com/gliderlabs/docker-alpine/rootfs/library-edge/versions/library-edge/rootfs.tar.xz OUT=rootfs-edge.tar.xz
