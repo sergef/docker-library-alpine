@@ -15,12 +15,6 @@ ARG APK_REPO=http://alpine.gliderlabs.com/alpine
 
 ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/glibc-compat/bin:/usr/glibc-compat/sbin
 
-# Read more https://github.com/sgerrand/alpine-pkg-glibc/releases
-
-COPY glibc-2.25-r0.apk /tmp/glibc-2.25-r0.apk
-COPY glibc-bin-2.25-r0.apk /tmp/glibc-bin-2.25-r0.apk
-COPY glibc-i18n-2.25-r0.apk /tmp/glibc-i18n-2.25-r0.apk
-
 COPY apk.sh /apk.sh
 
 RUN chmod +x /apk.sh \
@@ -29,10 +23,6 @@ RUN chmod +x /apk.sh \
     ca-certificates \
     libgcc \
     tini@community \
-  && apk add --allow-untrusted /tmp/glibc-2.25-r0.apk \
-  && apk add --allow-untrusted /tmp/glibc-bin-2.25-r0.apk \
-  && apk add --allow-untrusted /tmp/glibc-i18n-2.25-r0.apk \
-  && ldconfig /lib /usr/lib /usr/glibc-compat/lib \
   && rm -rf \
     /tmp/* \
     /var/cache/apk/*
