@@ -3,8 +3,7 @@ FROM scratch
 ARG VERSION=edge
 ENV VERSION=${VERSION}
 
-# curl -o rootfs-edge.tar.xz https://raw.githubusercontent.com/gliderlabs/docker-alpine/rootfs/library-edge/versions/library-edge/rootfs.tar.xz OUT=rootfs-edge.tar.xz
-
+# https://raw.githubusercontent.com/gliderlabs/docker-alpine/rootfs/library-edge/x86_64/versions/library-edge/x86_64/rootfs.tar.xz
 ADD rootfs-${VERSION}.tar.xz /
 
 # Global list of Mirrors can be found here:
