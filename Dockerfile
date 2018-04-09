@@ -18,8 +18,8 @@ ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/glibc
 
 COPY apk.sh /apk.sh
 
-RUN chmod +x /apk.sh \
-  && /apk.sh ${APK_REPO} \
+RUN chmod +x /apk.sh
+RUN /apk.sh ${APK_REPO} \
   && apk add --no-cache \
     ca-certificates \
     libgcc \
